@@ -18,6 +18,7 @@ dotenv.config({path: './config/config.env'});
 connectDB();
 
 //routes in the future
+const auth = require('./routes/auth');
 
 //initialize app
 const app = express();
@@ -47,6 +48,7 @@ app.use(hpp());
 app.use(cors());
 
 //mount routers in the future
+app.use('/api/v1/auth', auth);
 
 const PORT = process.env.PORT || 5000;
 
