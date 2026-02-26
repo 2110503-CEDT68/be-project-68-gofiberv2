@@ -1,15 +1,15 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
-const mongoSanitize=require('@exortek/express-mongo-sanitize');
-const helmet=require('helmet');
-const { xss } = require('express-xss-sanitizer');
-const rateLimit =require('express-rate-limit');
-const hpp=require('hpp');
-const cors=require('cors');
-const swaggerJsDoc = require('swagger-jsdoc');
-const swaggerUI = require('swagger-ui-express');
+// const mongoSanitize=require('@exortek/express-mongo-sanitize');
+// const helmet=require('helmet');
+// const { xss } = require('express-xss-sanitizer');
+// const rateLimit =require('express-rate-limit');
+// const hpp=require('hpp');
+// const cors=require('cors');
+// const swaggerJsDoc = require('swagger-jsdoc');
+// const swaggerUI = require('swagger-ui-express');
 
 // inject env vars
 dotenv.config({path: './config/config.env'});
@@ -19,6 +19,7 @@ connectDB();
 
 //routes in the future
 const auth = require('./routes/auth');
+const restaurants = require('./routes/restaurants');
 const reservations = require('./routes/reservations');
 
 //initialize app
@@ -31,25 +32,26 @@ app.set('query parser', 'extended');
 app.use(express.json());
 
 //cookie parser
-app.use(cookieParser());
+// app.use(cookieParser());
 
 //sanitize data
-app.use(mongoSanitize());
+// app.use(mongoSanitize());
 
-//set security headers
-app.use(helmet());
+// //set security headers
+// app.use(helmet());
 
-//prevent XSS attacks
-app.use(xss());
+// //prevent XSS attacks
+// app.use(xss());
 
-//prevent http param pollution
-app.use(hpp());
+// //prevent http param pollution
+// app.use(hpp());
 
-//enable CORS
-app.use(cors());
+// //enable CORS
+// app.use(cors());
 
 //mount routers in the future
 app.use('/api/v1/auth', auth);
+app.use('/api/v1/restaurants', restaurants);
 app.use('/api/v1/reservations', reservations);
 
 const PORT = process.env.PORT || 5000;
