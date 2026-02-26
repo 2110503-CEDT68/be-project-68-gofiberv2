@@ -19,6 +19,7 @@ connectDB();
 
 //routes in the future
 const auth = require('./routes/auth');
+const reservations = require('./routes/reservations');
 
 //initialize app
 const app = express();
@@ -49,6 +50,7 @@ app.use(cors());
 
 //mount routers in the future
 app.use('/api/v1/auth', auth);
+app.use('/api/v1/reservations', reservations);
 
 const PORT = process.env.PORT || 5000;
 
