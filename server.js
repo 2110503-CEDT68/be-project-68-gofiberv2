@@ -1,13 +1,13 @@
 const express = require('express');
 const dotenv = require('dotenv');
-// const cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
-// const mongoSanitize=require('@exortek/express-mongo-sanitize');
-// const helmet=require('helmet');
-// const { xss } = require('express-xss-sanitizer');
-// const rateLimit =require('express-rate-limit');
-// const hpp=require('hpp');
-// const cors=require('cors');
+const mongoSanitize=require('@exortek/express-mongo-sanitize');
+const helmet=require('helmet');
+const { xss } = require('express-xss-sanitizer');
+const rateLimit =require('express-rate-limit');
+const hpp=require('hpp');
+const cors=require('cors');
 // const swaggerJsDoc = require('swagger-jsdoc');
 // const swaggerUI = require('swagger-ui-express');
 
@@ -32,22 +32,22 @@ app.set('query parser', 'extended');
 app.use(express.json());
 
 //cookie parser
-// app.use(cookieParser());
+app.use(cookieParser());
 
 //sanitize data
-// app.use(mongoSanitize());
+app.use(mongoSanitize());
 
 // //set security headers
-// app.use(helmet());
+app.use(helmet());
 
 // //prevent XSS attacks
-// app.use(xss());
+app.use(xss());
 
 // //prevent http param pollution
-// app.use(hpp());
+app.use(hpp());
 
 // //enable CORS
-// app.use(cors());
+app.use(cors());
 
 //mount routers in the future
 app.use('/api/v1/auth', auth);
