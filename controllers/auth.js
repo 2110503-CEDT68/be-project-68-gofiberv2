@@ -1,5 +1,69 @@
 const User = require("../models/User");
 
+/**
+* @swagger
+* components:
+*   schemas:
+*     User:
+*       type: object
+*       required:
+*         - name
+*         - tel
+*         - email
+*         - password
+*         - role
+*       properties:
+*         name:
+*           type: string
+*           description: User name
+*         tel:
+*           type: string
+*           description: User telephone number
+*         email:
+*           type: string
+*           description: User email
+*         password:
+*           type: string
+*           description: User password
+*         role:
+*           type: string
+*           enum: [user, admin]
+*           default: user
+*           description: User role
+*/
+
+/**
+* @swagger
+* tags:
+*   name: Auth
+*   description: The authentication managing API
+*/
+
+/**
+* @swagger
+* /auth/register:
+*   post:
+*     summary: Register a new user
+*     tags: [Auth]
+*     requestBody:
+*       required: true
+*       content:
+*         application/json:
+*           schema:
+*             $ref: '#/components/schemas/User'
+*     responses:
+*       201:
+*         description: The user was successfully created
+*         content:
+*           application/json:
+*             schema:
+*               $ref: '#/components/schemas/User'
+*       400:
+*         description: Bad request
+*/
+
+
+
 // @desc    Register user
 // @route   POST /api/v1/auth/register
 // @access  Public
@@ -24,6 +88,38 @@ exports.register = async (req, res, next) => {
         console.log(err.stack);
     }
 };
+
+/**
+* @swagger
+* /auth/login:
+*   post:
+*     summary: Login user
+*     tags: [Auth]
+*     requestBody:
+*       required: true
+*       content:
+*         application/json:
+*           schema:
+*             type: object
+*             required:
+*               - email
+*               - password
+*             properties:
+*               email:
+*                 type: string
+*               password:
+*                 type: string
+*     responses:
+*       200:
+*         description: User logged in successfully
+*       400:
+*         description: Please provide an email and password
+*       401:
+*         description: Invalid credentials
+*       404:
+*         description: User not found
+*/
+
 
 // @desc    Login user
 // @route   POST /api/v1/auth/login
@@ -79,6 +175,26 @@ const sendTokenResponse = (user, statusCode, res) => {
     });
 };
 
+
+/**
+* @swagger
+* /auth/me:
+*   get:
+*     summary: Get current logged in user
+*     tags: [Auth]
+*     security:
+*       - bearerAuth: []
+*     responses:
+*       200:
+*         description: The current user
+*         content:
+*           application/json:
+*             schema:
+*               $ref: '#/components/schemas/User'
+*/
+
+
+
 //@desc     Get current Logged in user
 //@route    POST /api/v1/auth/me
 //@access   Private
@@ -89,6 +205,18 @@ exports.getMe = async (req, res, next) => {
         data: user
     });
 };
+
+/**
+* @swagger
+* /auth/logout:
+*   get:
+*     summary: Log user out
+*     tags: [Auth]
+*     responses:
+*       200:
+*         description: User logged out successfully
+*/
+
 
 // @desc    Log user out / clear cookie
 // @route   GET /api/v1/auth/logout
