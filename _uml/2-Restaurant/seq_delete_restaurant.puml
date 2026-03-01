@@ -1,0 +1,61 @@
+@startuml
+title Delete Restaurant (DELETE)
+
+skinparam backgroundColor white
+skinparam ParticipantBackgroundColor #E6E6E6
+skinparam ParticipantBorderColor #666666
+skinparam SequenceLifeLineBorderColor #999999
+skinparam ArrowColor #333333
+skinparam ActorBorderColor #666666
+skinparam ActorBackgroundColor #E6E6E6
+
+actor Client
+
+participant "<<javaScript>>\n:server" as S
+participant "<<router>>\n:restaurants" as R
+participant "<<middleware>>\nauth" as MW
+participant "<<controllers>>\n:restaurants" as C
+participant "<<model>>\n:Restaurant" as M
+database "<<MongoDB>>\n:restaurants" as DB
+
+Client -> S : req.delete("/api/v1/restaurants/:id")
+activate S
+S -> R : app.use("/api/v1/restaurants", restaurants)
+activate R
+
+R -> MW : protect()
+activate MW
+MW --> R : req.user
+deactivate MW
+
+R -> MW : authorize("admin")
+activate MW
+MW --> R : allowed
+deactivate MW
+
+R -> C : deleteRestaurant()
+activate C
+
+C -> M : findById(id)
+activate M
+M -> DB : RestaurantSchema\nfindById(id)
+activate DB
+DB --> M : restaurant
+deactivate DB
+M --> C : restaurant
+deactivate M
+
+C -> M : restaurant.deleteOne()
+activate M
+M -> DB : RestaurantSchema\ndeleteOne()
+activate DB
+DB --> M : success
+deactivate DB
+M --> C : success
+deactivate M
+
+C --> Client : response (200)\n{success,data}
+deactivate C
+deactivate R
+deactivate S
+@enduml

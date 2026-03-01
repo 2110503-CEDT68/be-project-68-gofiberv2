@@ -1,0 +1,32 @@
+@startuml
+title Logout User (GET)
+
+skinparam backgroundColor white
+skinparam ParticipantBackgroundColor #E6E6E6
+skinparam ParticipantBorderColor #666666
+skinparam SequenceLifeLineBorderColor #999999
+skinparam ArrowColor #333333
+skinparam ActorBorderColor #666666
+skinparam ActorBackgroundColor #E6E6E6
+
+actor Client
+
+participant "<<javaScript>>\n:server" as S
+participant "<<router>>\n:auth" as R
+participant "<<controllers>>\n:auth" as C
+
+Client -> S : req.get("/api/v1/auth/logout")
+activate S
+S -> R : app.use("/api/v1/auth", auth)
+activate R
+
+R -> C : logout()
+activate C
+
+note over C : Clear cookie\ntoken="none"
+
+C --> Client : response (200)\n{success,data}
+deactivate C
+deactivate R
+deactivate S
+@enduml
