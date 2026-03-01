@@ -1,0 +1,61 @@
+@startuml
+title Delete Reservation (DELETE)
+
+skinparam backgroundColor white
+skinparam ParticipantBackgroundColor #E6E6E6
+skinparam ParticipantBorderColor #666666
+skinparam SequenceLifeLineBorderColor #999999
+skinparam ArrowColor #333333
+skinparam ActorBorderColor #666666
+skinparam ActorBackgroundColor #E6E6E6
+
+actor Client
+
+participant "<<javaScript>>\n:server" as S
+participant "<<router>>\n:reservations" as R
+participant "<<middleware>>\nauth" as MW
+participant "<<controllers>>\n:reservations" as C
+participant "<<model>>\n:Reservation" as M
+database "<<MongoDB>>\n:reservations" as DB
+
+Client -> S : req.delete("/api/v1/reservations/:id")
+activate S
+S -> R : app.use("/api/v1/reservations", reservations)
+activate R
+
+R -> MW : protect()
+activate MW
+MW --> R : req.user
+deactivate MW
+
+R -> MW : authorize("admin", "user")
+activate MW
+MW --> R : allowed
+deactivate MW
+
+R -> C : deleteReservation()
+activate C
+
+C -> M : findById(id)
+activate M
+M -> DB : ReservationSchema\nfindById(id)
+activate DB
+DB --> M : reservation
+deactivate DB
+M --> C : reservation
+deactivate M
+
+C -> M : reservation.deleteOne()
+activate M
+M -> DB : ReservationSchema\ndeleteOne()
+activate DB
+DB --> M : success
+deactivate DB
+M --> C : success
+deactivate M
+
+C --> Client : response (200)\n{success,data}
+deactivate C
+deactivate R
+deactivate S
+@enduml
