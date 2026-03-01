@@ -32,9 +32,9 @@ const Restaurant = require("../models/Restaurant");
 *           example: 609bda561452242d88d36e37
 *         numOfTables:
 *           type: integer
-*           description: Number of tables to reserve (1-3)
+*           description: Number of tables to reserve (1-n)
 *           minimum: 1
-*           maximum: 3
+*           maximum: n
 *         status:
 *           type: string
 *           enum: [confirmed, waitlisted, cancelled]
@@ -296,9 +296,9 @@ exports.getReservation = async (req, res, next) => {
 *                 description: Date and time of reservation
 *               numOfTables:
 *                 type: integer
-*                 description: Number of tables to reserve (1-3)
+*                 description: Number of tables to reserve (1-n)
 *                 minimum: 1
-*                 maximum: 3
+*                 maximum: n
 *     responses:
 *       201:
 *         description: The reservation was successfully created. Status will be 'confirmed' if tables are available, or 'waitlisted' if fully booked.
@@ -443,9 +443,9 @@ exports.addReservation = async (req, res, next) => {
 *                 description: Date and time of reservation
 *               numOfTables:
 *                 type: integer
-*                 description: Number of tables to reserve (1-3)
+*                 description: Number of tables to reserve (1-n)
 *                 minimum: 1
-*                 maximum: 3
+*                 maximum: n
 *               status:
 *                 type: string
 *                 enum: [confirmed, waitlisted, cancelled]

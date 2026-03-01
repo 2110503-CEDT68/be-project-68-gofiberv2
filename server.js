@@ -79,10 +79,6 @@ const swaggerOptions = {
                 url: "http://localhost:5000/api/v1",
                 description: "Local",
             },
-            {
-                url: "https://get-a-backend.65737776.xyz/api/v1",
-                description: "Prod?",
-            },
         ],
         
         components: {

@@ -190,14 +190,25 @@ const sendTokenResponse = (user, statusCode, res) => {
 */
 
 //@desc     Get current Logged in user
-//@route    POST /api/v1/auth/me
+//@route    GET /api/v1/auth/me
 //@access   Private
 exports.getMe = async (req, res, next) => {
-    const user = await User.findById(req.user.id);
-    res.status(200).json({
-        success: true,
-        data: user
-    });
+     try {
+        if (!req.user) {
+            return res.status(401).json({ success: false, msg: 'Not authorized to access this route' });
+        }
+
+        const user = await User.findById(req.user.id);
+        
+        res.status(200).json({
+            success: true,
+            data: user
+        });
+    }
+    catch (err) {
+        res.status(401).json({ success: false });
+        console.log(err.stack);
+    }
 };
 
 /**
