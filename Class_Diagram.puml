@@ -1,140 +1,110 @@
 @startuml
-title CLASS DIAGRAM (UML PROFILE)
+title Restaurant Reservation System (UML Profile)
 
 left to right direction
-skinparam linetype ortho
 skinparam shadowing false
-skinparam classAttributeIconSize 0
 skinparam packageStyle rectangle
-skinparam dpi 160
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
 
-skinparam classBackgroundColor #FFFFFF
-skinparam classBorderColor #777777
-skinparam classFontColor #111111
-skinparam stereotypeFontColor #111111
+'=====================
+' APPLICATION LAYER
+'=====================
+package "Application Layer" {
 
-' ====== nodes ======
-class "RestaurantService" as App <<Application>>
-
-' --- Resources (collection) ---
-class "Auth" as AuthC <<Resource>> {
-  {field} <<Path>> /api/v1/auth
-  --
-  {method} <<POST>> register()
-  {method} <<POST>> login()
-  {method} <<GET>>  getMe()
-  {method} <<GET>>  logout()
+class RestaurantService <<Application>>
 }
 
-class "Restaurants" as RestsC <<Resource>> {
-  {field} <<Path>> /api/v1/restaurants
+'=====================
+' RESOURCE LAYER
+'=====================
+package "Resource Layer" {
+
+class Restaurants <<Resource>> {
+  <<Path>> /api/v1/restaurants
   --
-  {method} <<GET>>  getRestaurants()
-  {method} <<POST>> createRestaurant()
+  <<GET>>  getRestaurants()
+  <<POST>> createRestaurant()
 }
 
-class "Reservations" as ResvsC <<Resource>> {
-  {field} <<Path>> /api/v1/reservations
+class Restaurant <<Resource>> {
+  <<Path>> /api/v1/restaurants/{id}
   --
-  {method} <<GET>> getReservations()
+  <<GET>>    getRestaurant()
+  <<PUT>>    updateRestaurant()
+  <<DELETE>> deleteRestaurant()
 }
 
-' --- Resources (single/nested) ---
-class "Restaurant" as RestS <<Resource>> {
-  {field} <<Path>> /api/v1/restaurants/{id}
+class Reservations <<Resource>> {
+  <<Path>> /api/v1/reservations
   --
-  {method} <<GET>>    getRestaurant()
-  {method} <<PUT>>    updateRestaurant()
-  {method} <<DELETE>> deleteRestaurant()
+  <<GET>> getReservations()
 }
 
-class "Reservation" as ResvS <<Resource>> {
-  {field} <<Path>> /api/v1/reservations/{id}
+class Reservation <<Resource>> {
+  <<Path>> /api/v1/reservations/{id}
   --
-  {method} <<GET>>    getReservation()
-  {method} <<PUT>>    updateReservation()
-  {method} <<DELETE>> deleteReservation()
+  <<GET>>    getReservation()
+  <<PUT>>    updateReservation()
+  <<DELETE>> deleteReservation()
 }
 
-class "RestaurantReservations" as NestResv <<Resource>> {
-  {field} <<Path>> /api/v1/restaurants/{restaurantId}/reservations
+class RestaurantReservations <<Resource>> {
+  <<Path>> /api/v1/restaurants/{restaurantId}/reservations
   --
-  {method} <<POST>> addReservation()
+  <<POST>> addReservation()
 }
 
-' --- Representations ---
-class "User" as UserR <<Representation>> {
+}
+
+'=====================
+' REPRESENTATION LAYER
+'=====================
+package "Representation Layer" {
+
+class User <<Representation>> {
   name: String
-  tel: String
   email: String
   role: String
   password: String
+  createdAt: Date
 }
 
-class "Restaurant" as RestR <<Representation>> {
+class RestaurantModel <<Representation>> {
   name: String
   address: String
   tel: String
   openingHours: String
 }
 
-class "Reservation" as ResvR <<Representation>> {
+class ReservationModel <<Representation>> {
   apptDate: Date
   user: ObjectId
   restaurant: ObjectId
   createdAt: Date
 }
 
-class "Token" as TokenR <<Representation>> {
-  token: String
 }
 
-' ====== visible relations (เหมือนรูป: dashed + labels) ======
-App ..> AuthC  : <<use>>
-App ..> RestsC : <<use>>
-App ..> ResvsC : <<use>>
+'=====================
+' CLEAN CONNECTIONS
+'=====================
 
-RestsC ..> RestS : {id}\n<<Path>>
-ResvsC ..> ResvS : {id}\n<<Path>>
-RestS  ..> NestResv : /reservations\n<<Path>>
+RestaurantService --> Restaurants
+RestaurantService --> Reservations
 
-AuthC  ..> UserR  : <<use>>
-AuthC  ..> TokenR : <<use>>
+Restaurants ..> Restaurant : {id}
+Restaurant ..> RestaurantReservations : /reservations
+Reservations ..> Reservation : {id}
 
-RestsC ..> RestR : <<use>>
-RestS  ..> RestR : <<use>>
+Restaurants --> RestaurantModel
+Restaurant --> RestaurantModel
 
-ResvsC ..> ResvR : <<use>>
-ResvS  ..> ResvR : <<use>>
-NestResv ..> ResvR : <<use>>
+Reservations --> ReservationModel
+Reservation --> ReservationModel
+RestaurantReservations --> ReservationModel
 
-ResvR --> UserR : user
-ResvR --> RestR : restaurant
-
-' ====== LAYOUT CONTROL (บังคับตำแหน่งให้เป็นทรงในภาพ) ======
-' ทำให้ App อยู่ซ้ายสุด
-App -[hidden]-> RestsC
-App -[hidden]-> ResvsC
-App -[hidden]-> AuthC
-
-' จัด 2 แถวเหมือนรูป: (บน) Restaurants -> Restaurant -> RestaurantRep
-RestsC -[hidden]-> RestS
-RestS  -[hidden]-> RestR
-
-' (ล่าง) Reservations -> Reservation -> ReservationRep
-ResvsC -[hidden]-> ResvS
-ResvS  -[hidden]-> ResvR
-
-' ให้ Auth อยู่แถวบนซ้าย ไม่ไปปน
-AuthC -[hidden]-> RestsC
-
-' ให้ representation เรียงคอลัมน์ขวาสุด
-UserR -[hidden]-> RestR
-RestR -[hidden]-> ResvR
-ResvR -[hidden]-> TokenR
-
-' ให้ nested อยู่กลางขวาใกล้ Restaurant/Reservation
-RestS -[hidden]-> NestResv
-NestResv -[hidden]-> ResvR
+ReservationModel --> User
+ReservationModel --> RestaurantModel
 
 @enduml
