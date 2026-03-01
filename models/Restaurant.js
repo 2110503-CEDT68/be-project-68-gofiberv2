@@ -19,6 +19,11 @@ const RestaurantSchema = new mongoose.Schema({
     openingHours: {
         type: String,
         required: [true, 'Please add opening and closing times (e.g., 09:00-22:00)']
+    },
+    totalTables: {
+        type: Number,
+        required: [true, 'Please add the total number of tables'],
+        min: [1, 'Total tables must be at least 1']
     }
 }, {
     toJSON: { virtuals: true },

@@ -11,6 +11,7 @@ const Restaurant = require("../models/Restaurant");
 *         - address
 *         - tel
 *         - openingHours
+*         - totalTables
 *       properties:
 *         id:
 *           type: string
@@ -29,12 +30,17 @@ const Restaurant = require("../models/Restaurant");
 *         openingHours:
 *           type: string
 *           description: Opening and closing times (e.g., 09:00-22:00)
+*         totalTables:
+*           type: integer
+*           description: Total number of tables available in the restaurant
+*           minimum: 1
 *       example:
 *         id: 609bda561452242d88d36e37
 *         name: Happy Restaurant
 *         address: 121 ถ.สุขุมวิท
 *         tel: 02-2187000
 *         openingHours: 09:00-22:00
+*         totalTables: 20
 */
 
 /**
@@ -60,8 +66,6 @@ const Restaurant = require("../models/Restaurant");
 *               items:
 *                 $ref: '#/components/schemas/Restaurant'
 */
-
-
 
 //@desc     Get all restaurants
 //@route    GET /api/v1/restaurants
@@ -133,8 +137,6 @@ exports.getRestaurants = async (req, res, next) => {
   }
 };
 
-
-
 /**
 * @swagger
 * /restaurants/{id}:
@@ -176,7 +178,6 @@ exports.getRestaurant = async (req, res, next) => {
   }
 };
 
-
 /**
 * @swagger
 * /restaurants:
@@ -202,8 +203,6 @@ exports.getRestaurant = async (req, res, next) => {
 *         description: Some server error
 */
 
-
-
 //@desc     Create new restaurant
 //@route    POST /api/v1/restaurants
 //@access   Private
@@ -214,7 +213,6 @@ exports.createRestaurant = async (req, res, next) => {
     data: restaurant,
   });
 };
-
 
 /**
 * @swagger
@@ -250,7 +248,6 @@ exports.createRestaurant = async (req, res, next) => {
 *         description: Some error happened
 */
 
-
 //@desc     Update restaurant
 //@route    PUT /api/v1/restaurants/:id
 //@access   Private
@@ -265,14 +262,11 @@ exports.updateRestaurant = async (req, res, next) => {
       return res.status(404).json({ success: false, message: `No restaurant with the id of ${req.params.id}` });
     }
 
-
     res.status(200).json({ success: true, data: restaurant });
   } catch (err) {
     res.status(400).json({ success: false });
   }
 };
-
-
 
 /**
 * @swagger
@@ -295,9 +289,6 @@ exports.updateRestaurant = async (req, res, next) => {
 *       404:
 *         description: The restaurant was not found
 */
-
-
-
 
 //@desc     Delete restaurant
 //@route    DELETE /api/v1/restaurants/:id

@@ -1,3 +1,6 @@
+const { setServers } = require("node:dns/promises");
+setServers(["1.1.1.1", "8.8.8.8"]);
+
 const express = require('express');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
@@ -18,9 +21,9 @@ dotenv.config({path: './config/config.env'});
 //connect to database
 connectDB();
 
-//routes in the future
-const auth = require('./routes/auth');
+//routes
 const restaurants = require('./routes/restaurants');
+const auth = require('./routes/auth');
 const reservations = require('./routes/reservations');
 
 //initialize app
@@ -38,10 +41,10 @@ app.use(cookieParser());
 //sanitize data
 app.use(mongoSanitize());
 
-// //set security headers
+//set security headers
 app.use(helmet());
 
-// //prevent XSS attacks
+//prevent XSS attacks
 app.use(xss());
 
 const limiter = rateLimit({
@@ -50,15 +53,15 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// //prevent http param pollution
+//prevent http param pollution
 app.use(hpp());
 
-// //enable CORS
+//enable CORS
 app.use(cors());
 
-//mount routers in the future
-app.use('/api/v1/auth', auth);
+//mount routers
 app.use('/api/v1/restaurants', restaurants);
+app.use('/api/v1/auth', auth);
 app.use('/api/v1/reservations', reservations);
 
 const PORT = process.env.PORT || 5000;
@@ -75,7 +78,11 @@ const swaggerOptions = {
             {
                 url: "http://localhost:5000/api/v1",
                 description: "Local",
-            }
+            },
+            {
+                url: "https://get-a-backend.65737776.xyz/api/v1",
+                description: "Prod?",
+            },
         ],
         
         components: {

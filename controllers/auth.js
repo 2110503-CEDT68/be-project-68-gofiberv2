@@ -62,8 +62,6 @@ const User = require("../models/User");
 *         description: Bad request
 */
 
-
-
 // @desc    Register user
 // @route   POST /api/v1/auth/register
 // @access  Public
@@ -120,7 +118,6 @@ exports.register = async (req, res, next) => {
 *         description: User not found
 */
 
-
 // @desc    Login user
 // @route   POST /api/v1/auth/login
 // @access  Public
@@ -175,7 +172,6 @@ const sendTokenResponse = (user, statusCode, res) => {
     });
 };
 
-
 /**
 * @swagger
 * /auth/me:
@@ -191,30 +187,17 @@ const sendTokenResponse = (user, statusCode, res) => {
 *           application/json:
 *             schema:
 *               $ref: '#/components/schemas/User'
-*       401:
-*         description: Not authorized to access this route
 */
 
 //@desc     Get current Logged in user
-//@route    GET /api/v1/auth/me
+//@route    POST /api/v1/auth/me
 //@access   Private
 exports.getMe = async (req, res, next) => {
-     try {
-        if (!req.user) {
-            return res.status(401).json({ success: false, msg: 'Not authorized to access this route' });
-        }
-
-        const user = await User.findById(req.user.id);
-        
-        res.status(200).json({
-            success: true,
-            data: user
-        });
-    }
-    catch (err) {
-        res.status(401).json({ success: false });
-        console.log(err.stack);
-    }
+    const user = await User.findById(req.user.id);
+    res.status(200).json({
+        success: true,
+        data: user
+    });
 };
 
 /**
@@ -227,7 +210,6 @@ exports.getMe = async (req, res, next) => {
 *       200:
 *         description: User logged out successfully
 */
-
 
 // @desc    Log user out / clear cookie
 // @route   GET /api/v1/auth/logout
