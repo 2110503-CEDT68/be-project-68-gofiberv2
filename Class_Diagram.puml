@@ -1,0 +1,140 @@
+@startuml
+title CLASS DIAGRAM (UML PROFILE)
+
+left to right direction
+skinparam linetype ortho
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam dpi 160
+
+skinparam classBackgroundColor #FFFFFF
+skinparam classBorderColor #777777
+skinparam classFontColor #111111
+skinparam stereotypeFontColor #111111
+
+' ====== nodes ======
+class "RestaurantService" as App <<Application>>
+
+' --- Resources (collection) ---
+class "Auth" as AuthC <<Resource>> {
+  {field} <<Path>> /api/v1/auth
+  --
+  {method} <<POST>> register()
+  {method} <<POST>> login()
+  {method} <<GET>>  getMe()
+  {method} <<GET>>  logout()
+}
+
+class "Restaurants" as RestsC <<Resource>> {
+  {field} <<Path>> /api/v1/restaurants
+  --
+  {method} <<GET>>  getRestaurants()
+  {method} <<POST>> createRestaurant()
+}
+
+class "Reservations" as ResvsC <<Resource>> {
+  {field} <<Path>> /api/v1/reservations
+  --
+  {method} <<GET>> getReservations()
+}
+
+' --- Resources (single/nested) ---
+class "Restaurant" as RestS <<Resource>> {
+  {field} <<Path>> /api/v1/restaurants/{id}
+  --
+  {method} <<GET>>    getRestaurant()
+  {method} <<PUT>>    updateRestaurant()
+  {method} <<DELETE>> deleteRestaurant()
+}
+
+class "Reservation" as ResvS <<Resource>> {
+  {field} <<Path>> /api/v1/reservations/{id}
+  --
+  {method} <<GET>>    getReservation()
+  {method} <<PUT>>    updateReservation()
+  {method} <<DELETE>> deleteReservation()
+}
+
+class "RestaurantReservations" as NestResv <<Resource>> {
+  {field} <<Path>> /api/v1/restaurants/{restaurantId}/reservations
+  --
+  {method} <<POST>> addReservation()
+}
+
+' --- Representations ---
+class "User" as UserR <<Representation>> {
+  name: String
+  tel: String
+  email: String
+  role: String
+  password: String
+}
+
+class "Restaurant" as RestR <<Representation>> {
+  name: String
+  address: String
+  tel: String
+  openingHours: String
+}
+
+class "Reservation" as ResvR <<Representation>> {
+  apptDate: Date
+  user: ObjectId
+  restaurant: ObjectId
+  createdAt: Date
+}
+
+class "Token" as TokenR <<Representation>> {
+  token: String
+}
+
+' ====== visible relations (เหมือนรูป: dashed + labels) ======
+App ..> AuthC  : <<use>>
+App ..> RestsC : <<use>>
+App ..> ResvsC : <<use>>
+
+RestsC ..> RestS : {id}\n<<Path>>
+ResvsC ..> ResvS : {id}\n<<Path>>
+RestS  ..> NestResv : /reservations\n<<Path>>
+
+AuthC  ..> UserR  : <<use>>
+AuthC  ..> TokenR : <<use>>
+
+RestsC ..> RestR : <<use>>
+RestS  ..> RestR : <<use>>
+
+ResvsC ..> ResvR : <<use>>
+ResvS  ..> ResvR : <<use>>
+NestResv ..> ResvR : <<use>>
+
+ResvR --> UserR : user
+ResvR --> RestR : restaurant
+
+' ====== LAYOUT CONTROL (บังคับตำแหน่งให้เป็นทรงในภาพ) ======
+' ทำให้ App อยู่ซ้ายสุด
+App -[hidden]-> RestsC
+App -[hidden]-> ResvsC
+App -[hidden]-> AuthC
+
+' จัด 2 แถวเหมือนรูป: (บน) Restaurants -> Restaurant -> RestaurantRep
+RestsC -[hidden]-> RestS
+RestS  -[hidden]-> RestR
+
+' (ล่าง) Reservations -> Reservation -> ReservationRep
+ResvsC -[hidden]-> ResvS
+ResvS  -[hidden]-> ResvR
+
+' ให้ Auth อยู่แถวบนซ้าย ไม่ไปปน
+AuthC -[hidden]-> RestsC
+
+' ให้ representation เรียงคอลัมน์ขวาสุด
+UserR -[hidden]-> RestR
+RestR -[hidden]-> ResvR
+ResvR -[hidden]-> TokenR
+
+' ให้ nested อยู่กลางขวาใกล้ Restaurant/Reservation
+RestS -[hidden]-> NestResv
+NestResv -[hidden]-> ResvR
+
+@enduml
