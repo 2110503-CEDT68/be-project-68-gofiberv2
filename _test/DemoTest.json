@@ -929,7 +929,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Test Restaurant\",\n    \"address\": \"123 Test St\",\n    \"tel\": \"021111111\",\n    \"openingHours\": \"09:00-22:00\",\n    \"totalTables\": 5\n}",
+              "raw": "{\n    \"name\": \"{{$randomFullName}}\",\n    \"address\": \"{{$randomStreetAddress}}\",\n    \"tel\": \"021111111\",\n    \"openingHours\": \"09:00-22:00\",\n    \"totalTables\": 5\n}",
               "options": {
                 "raw": {
                   "language": "json"

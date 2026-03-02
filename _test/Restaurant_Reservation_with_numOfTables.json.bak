@@ -1,11 +1,10 @@
 {
   "info": {
-    "_postman_id": "ce820439-b343-4c17-a525-7da0fee66337",
-    "name": "Restaurant Reservation-1 Copy 2",
+    "_postman_id": "ff5b971e-48dc-4a9b-8976-12222b95bacc",
+    "name": "Restaurant Reservation-1",
     "description": "Collection for testing Restaurant Reservation API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "36669484",
-    "_collection_link": "https://go.postman.co/collection/36669484-ce820439-b343-4c17-a525-7da0fee66337?source=collection_link"
+    "_exporter_id": "36669484"
   },
   "item": [
     {
@@ -179,6 +178,17 @@
         },
         {
           "name": "Get Me",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "setTimeout(() => {}, 300);"
+                ]
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -205,7 +215,10 @@
               ]
             }
           },
-          "response": [],
+          "response": []
+        },
+        {
+          "name": "Logout",
           "event": [
             {
               "listen": "prerequest",
@@ -216,10 +229,7 @@
                 ]
               }
             }
-          ]
-        },
-        {
-          "name": "Logout",
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -236,18 +246,7 @@
               ]
             }
           },
-          "response": [],
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "setTimeout(() => {}, 300);"
-                ]
-              }
-            }
-          ]
+          "response": []
         },
         {
           "name": "Login Admin",
@@ -310,6 +309,17 @@
       "item": [
         {
           "name": "Get All Restaurants",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "setTimeout(() => {}, 300);"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -325,18 +335,7 @@
               ]
             }
           },
-          "response": [],
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "setTimeout(() => {}, 300);"
-                ]
-              }
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create Restaurant (Admin)",
@@ -352,16 +351,20 @@
                   "var jsonData = pm.response.json();",
                   "pm.environment.set(\"restaurantId\", jsonData.data.id);"
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             },
             {
               "listen": "prerequest",
               "script": {
-                "type": "text/javascript",
                 "exec": [
                   "setTimeout(() => {}, 300);"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -380,7 +383,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Test Restaurant\",\n    \"address\": \"123 Test St\",\n    \"tel\": \"021111111\",\n    \"openingHours\": \"09:00-22:00\",\n    \"totalTables\": 5\n}",
+              "raw": "{\n    \"name\": \"{{$randomFullName}}\",\n    \"address\": \"{{$randomStreetAddress}}\",\n    \"tel\": \"0123456789\",\n    \"openingHours\": \"09:00-22:00\",\n    \"totalTables\": 5\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -403,6 +406,17 @@
         },
         {
           "name": "Get Single Restaurant",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "setTimeout(() => {}, 300);"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -425,7 +439,10 @@
               ]
             }
           },
-          "response": [],
+          "response": []
+        },
+        {
+          "name": "Update Restaurant (Admin)",
           "event": [
             {
               "listen": "prerequest",
@@ -436,10 +453,7 @@
                 ]
               }
             }
-          ]
-        },
-        {
-          "name": "Update Restaurant (Admin)",
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -481,7 +495,10 @@
               ]
             }
           },
-          "response": [],
+          "response": []
+        },
+        {
+          "name": "Delete Restaurant (Admin)",
           "event": [
             {
               "listen": "prerequest",
@@ -492,10 +509,7 @@
                 ]
               }
             }
-          ]
-        },
-        {
-          "name": "Delete Restaurant (Admin)",
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -528,18 +542,7 @@
               ]
             }
           },
-          "response": [],
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "setTimeout(() => {}, 300);"
-                ]
-              }
-            }
-          ]
+          "response": []
         }
       ]
     },
@@ -571,6 +574,7 @@
               ]
             },
             "method": "POST",
+            "header": [],
             "body": {
               "mode": "raw",
               "raw": "{\n    \"name\": \"{{$randomFullName}}\",\n    \"address\": \"456 Res St\",\n    \"tel\": \"022222222\",\n    \"openingHours\": \"09:00-23:00\",\n    \"totalTables\": 3\n}",
@@ -591,7 +595,8 @@
                 "restaurants"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Create Confirmed-Reservation (User)",
@@ -618,6 +623,7 @@
               ]
             },
             "method": "POST",
+            "header": [],
             "body": {
               "mode": "raw",
               "raw": "{\n    \"apptDate\": \"2026-05-15T19:30:00Z\",\n    \"numOfTables\": 2\n}",
@@ -640,7 +646,8 @@
                 "reservations"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Create Waitlisted-Reservation (User)",
@@ -667,6 +674,7 @@
               ]
             },
             "method": "POST",
+            "header": [],
             "body": {
               "mode": "raw",
               "raw": "{\n    \"apptDate\": \"2026-05-15T19:30:00Z\",\n    \"numOfTables\": 2\n}",
@@ -689,7 +697,8 @@
                 "reservations"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Cancel Confirmed-Reservation (Admin/User)",
@@ -716,6 +725,7 @@
               ]
             },
             "method": "PUT",
+            "header": [],
             "body": {
               "mode": "raw",
               "raw": "{\n    \"status\": \"cancelled\"\n}",
@@ -737,7 +747,8 @@
                 "{{confirmedResId}}"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "To be promoted (Admin)",
@@ -764,6 +775,7 @@
               ]
             },
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{URL}}/api/v1/reservations/promotable",
               "host": [
@@ -776,7 +788,8 @@
                 "promotable"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Promote Waitlist to Confirmed (Admin)",
@@ -803,6 +816,7 @@
               ]
             },
             "method": "PUT",
+            "header": [],
             "body": {
               "mode": "raw",
               "raw": "{\n    \"status\": \"confirmed\"\n}",
@@ -824,7 +838,8 @@
                 "{{waitlistedResId}}"
               ]
             }
-          }
+          },
+          "response": []
         }
       ]
     }
