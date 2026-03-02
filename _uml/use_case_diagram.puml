@@ -1,0 +1,71 @@
+@startuml Restaurant Reservation System Use Cases
+left to right direction
+actor "Guest" as guest
+actor "User" as user
+actor "Admin" as admin
+
+' Inheritance for reduced redundancy
+guest <|-- user
+user <|-- admin
+
+package "Auth System" {
+  usecase "Register" as register
+  usecase "Login" as login
+  usecase "Logout" as logout
+  usecase "Get Current User Profile" as getMe
+}
+
+package "Restaurant System" {
+  usecase "Get All Restaurants" as getRestaurants
+  usecase "Get Single Restaurant" as getRestaurant
+  usecase "Create Restaurant" as createRestaurant
+  usecase "Update Restaurant" as updateRestaurant
+  usecase "Delete Restaurant" as deleteRestaurant
+}
+
+package "Reservation System" {
+  usecase "Get All Reservations" as getReservations
+  usecase "Get Single Reservation" as getReservation
+  usecase "Create Reservation" as createReservation
+  usecase "Update Reservation" as updateReservation
+  usecase "Delete Reservation" as deleteReservation
+  usecase "Get Promotable Waitlists" as getPromotable
+}
+
+' Guest
+guest --> register
+guest --> login
+guest --> getRestaurants
+guest --> getRestaurant
+
+' User
+user --> logout
+user --> getMe
+user --> createReservation
+user --> getReservations
+user --> getReservation
+user --> updateReservation
+user --> deleteReservation
+
+' Admin
+admin --> createRestaurant
+admin --> updateRestaurant
+admin --> deleteRestaurant
+admin --> getPromotable
+
+note right of getReservations
+  User sees own
+  Admin sees all
+end note
+
+note right of updateReservation
+  User updates own
+  Admin updates any
+end note
+
+note right of deleteReservation
+  User deletes own
+  Admin deletes any
+end note
+
+@enduml
