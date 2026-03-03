@@ -1,0 +1,51 @@
+@startuml
+title Get Current User (GET)
+
+skinparam backgroundColor white
+skinparam ParticipantBackgroundColor #E6E6E6
+skinparam ParticipantBorderColor #666666
+skinparam SequenceLifeLineBorderColor #999999
+skinparam ArrowColor #333333
+skinparam ActorBorderColor #666666
+skinparam ActorBackgroundColor #E6E6E6
+
+actor Client
+
+participant "<<javaScript>>\n:server" as S
+participant "<<router>>\n:auth" as R
+participant "<<middleware>>\nauth" as MW
+participant "<<controllers>>\n:auth" as C
+participant "<<model>>\n:User" as M
+database "<<MongoDB>>\n:users" as DB
+
+Client -> S : req.get("/api/v1/auth/me")\n(bearer token)
+activate S
+S -> R : app.use("/api/v1/auth", auth)
+activate R
+
+R -> MW : protect()
+activate MW
+MW -> DB : verify token & User.findById()
+activate DB
+DB --> MW : user
+deactivate DB
+MW --> R : req.user
+deactivate MW
+
+R -> C : getMe()
+activate C
+
+C -> M : findById(req.user.id)
+activate M
+M -> DB : UserSchema\nfindById()
+activate DB
+DB --> M : user
+deactivate DB
+M --> C : user
+deactivate M
+
+C --> Client : response (200)\n{success,data}
+deactivate C
+deactivate R
+deactivate S
+@enduml

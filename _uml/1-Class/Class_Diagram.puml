@@ -1,0 +1,99 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam linetype ortho
+
+skinparam class {
+    ArrowColor black
+    BorderColor black
+    BackgroundColor white
+    FontSize 14
+    AttributeFontSize 12
+    MethodFontSize 12
+}
+skinparam nodesep 60
+skinparam ranksep 150
+
+package "Restaurant Reservation System" {
+
+    class RestaurantService <<Application>>
+
+    class Restaurants <<Resource>> {
+        <<GET>> +getRestaurants(): RestaurantModel
+        <<POST>> +createRestaurant(): RestaurantModel
+    }
+
+    class Restaurant <<Resource>> {
+        <<GET>> +getRestaurant(): RestaurantModel
+        <<PUT>> +updateRestaurant(): RestaurantModel
+        <<DELETE>> +deleteRestaurant(): void
+    }
+    
+    class RestaurantReservations <<Resource>> {
+        <<GET>> +getReservations(): ReservationModel
+        <<POST>> +addReservation(): ReservationModel
+    }
+
+    class Reservations <<Resource>> {
+        <<GET>> +getReservations(): ReservationModel
+        <<GET>> +getPromotableWaitlists(): ReservationModel
+    }
+
+    class Reservation <<Resource>> {
+        <<GET>> +getReservation(): ReservationModel
+        <<PUT>> +updateReservation(): ReservationModel
+        <<DELETE>> +deleteReservation(): void
+    }
+    
+    class Auth <<Resource>> {
+        <<POST>> +register(): User
+        <<POST>> +login(): User
+        <<GET>> +getMe(): User
+        <<GET>> +logout(): void
+    }
+
+    class RestaurantModel <<Representation>> {
+        - name: String
+        - address: String
+        - tel: String
+        - openingHours: String
+        - totalTables: Number
+    }
+
+    class ReservationModel <<Representation>> {
+        - apptDate: Date
+        - user: ObjectId
+        - restaurant: ObjectId
+        - numOfTables: Number
+        - status: String
+        - createdAt: Date
+    }
+
+    class User <<Representation>> {
+        - name: String
+        - tel: String
+        - email: String
+        - role: String
+        - password: String
+        - createdAt: Date
+    }
+
+    RestaurantService ..> Restaurants : "  /api/v1/restaurants\n  <<Path>>"
+    Restaurants ..> Restaurant : "  /{id}\n  <<Path>>"
+    Restaurant ..> RestaurantReservations : "  /reservations\n  <<Path>>"
+
+    RestaurantService ..> Reservations : "  /api/v1/reservations\n  <<Path>>"
+    Reservations ..> Reservation : "  /{id}\n  <<Path>>"
+
+    RestaurantService ..> Auth : "  /api/v1/auth\n  <<Path>>"
+
+    Restaurants ..> RestaurantModel : "<<use>>"
+    Restaurant ..> RestaurantModel : "<<use>>"
+
+    Reservations ..> ReservationModel : "<<use>>"
+    Reservation ..> ReservationModel : "<<use>>"
+    RestaurantReservations ..> ReservationModel : "<<use>>"
+
+    Auth ..> User : "<<use>>"
+}
+@enduml

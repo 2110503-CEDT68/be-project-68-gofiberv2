@@ -1,0 +1,53 @@
+@startuml
+title Get Promotable Waitlists (GET)
+
+skinparam backgroundColor white
+skinparam ParticipantBackgroundColor #E6E6E6
+skinparam ParticipantBorderColor #666666
+skinparam SequenceLifeLineBorderColor #999999
+skinparam ArrowColor #333333
+skinparam ActorBorderColor #666666
+skinparam ActorBackgroundColor #E6E6E6
+
+actor Client
+
+participant "<<javaScript>>\n:server" as S
+participant "<<router>>\n:reservations" as R
+participant "<<middleware>>\nauth" as MW
+participant "<<controllers>>\n:reservations" as C
+participant "<<model>>\n:Reservation" as M
+database "<<MongoDB>>\n:reservations" as DB
+
+Client -> S : req.get("/api/v1/reservations/promotable")
+activate S
+S -> R : app.use("/api/v1/reservations", reservations)
+activate R
+
+R -> MW : protect()
+activate MW
+MW --> R : req.user
+deactivate MW
+
+R -> MW : authorize("admin")
+activate MW
+MW --> R : allowed
+deactivate MW
+
+R -> C : getPromotableWaitlists()
+activate C
+
+C -> M : find({status: 'waitlisted'})\n.sort().populate()
+activate M
+M -> DB : ReservationSchema\nfind(...) + select + populate
+activate DB
+DB --> M : waitlistedReservations[]
+deactivate DB
+M --> C : waitlistedReservations[]
+deactivate M
+
+note over C : Calculate overlaps\nand determine\npromotable waitlists
+C --> Client : response (200)\n{success,count,data}
+deactivate C
+deactivate R
+deactivate S
+@enduml

@@ -1,0 +1,42 @@
+@startuml
+title Create Reservation (POST)
+
+skinparam backgroundColor white
+skinparam ParticipantBackgroundColor #E6E6E6
+skinparam ParticipantBorderColor #666666
+skinparam SequenceLifeLineBorderColor #999999
+skinparam ArrowColor #333333
+skinparam ActorBorderColor #666666
+skinparam ActorBackgroundColor #E6E6E6
+
+actor Client
+participant "<<javaScript>>\n:server" as S
+participant "<<router>>\n:restaurants" as R
+participant "<<controllers>>\n:reservations" as C
+participant "<<model>>\n:Reservation" as M
+database "<<MongoDB>>\n:reservations" as DB
+
+Client -> S : req.post("/api/v1/restaurants/:restaurantId/reservations")
+activate S
+S -> R : app.use("/api/v1/restaurants", restaurants)
+activate R
+
+R -> C : addReservation()\n(re-route to reservations,\nprotect+authorize already passed)
+activate C
+
+C -> M : create(req.body + user + restaurant)\n(check restaurant exists,\nlimit 3 if non-admin)
+activate M
+
+M -> DB : ReservationSchema\ninsertOne(...)
+activate DB
+DB --> M : reservation
+deactivate DB
+
+M --> C : reservation
+deactivate M
+
+C --> Client : response (201)\n{success,data}
+deactivate C
+deactivate R
+deactivate S
+@enduml
